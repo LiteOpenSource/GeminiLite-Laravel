@@ -1,0 +1,37 @@
+{
+    "name": "liteopensource/gemini-lite-laravel",
+    "description": "Redisingned and easy to use Gemini Lite SDK for Laravel",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "LiteOpenSource\\GeminiLiteLaravel\\Src\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "JoseLopezLara",
+            "email": "jose.lopez.lara.cto@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "illuminate/support": "^9.0 || ^10.0 || ^11.0",
+        "illuminate/console": "^9.0 || ^10.0 || ^11.0",
+        "illuminate/database": "^9.0 || ^10.0 || ^11.0",
+        "illuminate/http": "^9.0 || ^10.0 || ^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "LiteOpenSource\\GeminiLiteLaravel\\Src\\Providers\\GeminiLiteServiceProvider"
+            ],
+            "aliases": {
+                "UploadFileToGemini": "LiteOpenSource\\GeminiLiteLaravel\\Src\\Facades\\UploadFileToGemini",
+                "Gemini": "LiteOpenSource\\GeminiLiteLaravel\\Src\\Facades\\Gemini"
+            }
+        }
+    }
+}
