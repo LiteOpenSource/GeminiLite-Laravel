@@ -20,13 +20,9 @@ class GeminiService implements GeminiServiceInterface
         --------------------------- PREPERTIES SECTION ---------------------------
         --------------------------------------------------------------------------
     */
-    //TODO: Change coment documentatio to JSON megminiModelConfig
-    //JSON structures to assemblig request into trait
-    use GeminiConfigAndPropertiesJSONStructures;
     //Guzzle client
     private $guzzleClient;
-
-    private $geminiChatInstaces;
+    private $secretAPIKey;
 
     //---------------------------- CONSTRUCTOR SECTION --------------------------
     //---------------------------- CONSTRUCTOR SECTION --------------------------
@@ -34,60 +30,28 @@ class GeminiService implements GeminiServiceInterface
         Log::info("[ IN GeminiService ->  __construct: ]. SecretAPIKey: ". $secretAPIKey);
 
         $this->guzzleClient = new Client();
-        $this->initDefaultConfigGeminiAPIJSON($secretAPIKey);
-        $this->geminiChatInstaces = new Collection();
+        $this->secretAPIKey = $secretAPIKey;
     }
 
     //---------------------- INTERFACE FUNCTIONS SECTION -----------------------
     //---------------------- INTERFACE FUNCTIONS SECTION -----------------------
-    //TODO: I should return a interface object of GeniniChat class instead mixed type
+    // TODO: I should return a interface object of GeniniChat class instead mixed type
+
+
+    // TODO: Maybe I should implement two diferent methods for each type of model (GeminiFlash and GeminiPro)
+    // TODO: I have 2 options: The first option is chance config model in time of execution and chose the model.
+    // TODO: The second option is create 2 diferents methodes for each model and call them by the model type. Like a
+    // TODO: New GeminiFlashChat and New GeminiProChat. But I think the first option is more efficient because it's can keep
+    // TODO: the histori chat even though the model type change.
+
     public function newChat(): mixed
     {
-        Log::info("[ IN GeminiService ->  gemini(): ]. ");
+        Log::info("[ IN GeminiService -> newChat() ] - Creating a new GeminiChat instance.");
 
-        $geminiModelConfig = $this->getGeminiModelConfig();
-        $geminiChatInstace = new GeminiChat($geminiModelConfig, $this->guzzleClient, $this->urlAPItoGeminiFlash);
-        $this->geminiChatInstaces->push($geminiChatInstace);
-        return $geminiChatInstace;
-    }
-
-    //TODO: I should return a array instead mixed type
-    //TODO: Verify if I need to add control error management when request getGeminiModelConfig and this is the first funciotn caller. Maybe this function can return error null parameters.
-    //TODO: Thiking about before TODO, I need to verify urlAPI and secretAPIKey.
-
-    public function getGeminiModelConfig(): mixed
-    {
-        return $this->modelConfigJSON;
-    }
-
-    public function setGeminiModelConfig($temperature, $topK, $topP, $maxOutputTokens, $responseMimeType, $geminiChatinstance)
-    {
-        $this->modelConfigJSON['temperature'] = $temperature;
-        $this->modelConfigJSON['topK'] = $topK;
-        $this->modelConfigJSON['topP'] = $topP;
-        $this->modelConfigJSON['maxOutputTokens'] = $maxOutputTokens;
-        $this->modelConfigJSON['responseMimeType'] = $responseMimeType;
-        // TODO: Verify if I need to add urlAPI to change between models
-        // TODO: Since delete urlAPI to modelCongidJSON structure, I will send the urlAPI in updateConfig function to changeConfig medel, Like a do in geminiChat constructor
-
-        if ($this->geminiChatInstaces->contains($geminiChatinstance)) {
-            $geminiChatinstance->updateConfig($this->modelConfigJSON);
-        }
+        return new GeminiChat($this->guzzleClient, $this->secretAPIKey);
     }
 
     //------------------------ OTHER FUNCTIONS SECTION -------------------------
     //------------------------ OTHER FUNCTIONS SECTION -------------------------
-    //TODO: Verify if I need to init default config here, because I have the same in the JSON Object in the Trait
-
-    private function initDefaultConfigGeminiAPIJSON($secretAPIKey)
-    {
-        $this->modelConfigJSON['temperature'] = 1;
-        $this->modelConfigJSON['topK'] = 64;
-        $this->modelConfigJSON['topP'] = 0.95;
-        $this->modelConfigJSON['maxOutputTokens'] = 8192;
-        $this->modelConfigJSON['responseMimeType'] = "text/plain";
-        //TODO: I think that is correct config secret apiKey here, but... I can to do this in the trait
-        $this->urlAPItoGeminiFlash = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" . $secretAPIKey;
-    }
 
 }

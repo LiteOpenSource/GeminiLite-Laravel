@@ -6,42 +6,29 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use LiteOpenSource\GeminiLiteLaravel\Src\Traits\GeminiConfigAndPropertiesJSONStructures;
 use LiteOpenSource\GeminiLiteLaravel\Src\Traits\GeminiRequestAndResponsesJSONStructures;
+use LiteOpenSource\GeminiLiteLaravel\Src\Traits\GeminiTokenPropertiesJSONStructures;
 
 class GeminiChat implements GeminiChatInterface
 {
 
     //---------------------------- PROPERTIES SECTION --------------------------
     //---------------------------- PROPERTIES SECTION --------------------------
-    private $geminiModelConfig;
     private $guzzleClient;
+
+    use GeminiConfigAndPropertiesJSONStructures;
     use GeminiRequestAndResponsesJSONStructures;
-
-    // TODO: Verify if I need to send this properties to the trait
-    // Token information about chat
-    // --> "promptTokenCount" represent the number of token in last prompt
-    // --> "candidatesTokenCount" represent the number of tokens returned to last respose
-    // --> "totalTokenCount" represent the number of total tokens
-    //      between input and output
-
-    // TODO: - - - IMPORTANT --> I have to do private these properties <-- IMPORTANT - - -
-    // TODO: - - - IMPORTANT --> I have to do private these properties <-- IMPORTANT - - -
-    // TODO: - - - IMPORTANT --> I have to do private these properties <-- IMPORTANT - - -
-    public $promptTokenCount;
-    public $candidatesTokenCount;
-    public $totalTokenCount;
-    public $totalTokenHistoryChatCount;
-    private $urlAPIModel;
-
+    use GeminiTokenPropertiesJSONStructures;
 
     //---------------------------- CONSTRUCTOR SECTION --------------------------
     //---------------------------- CONSTRUCTOR SECTION --------------------------
-    public function __construct($geminiModelConfig, $guzzleClient, $urlAPIModel)
+    public function __construct($guzzleClient, $secretAPIKey)
     {
-        $this->initGlobalProperties();
-        $this->geminiModelConfig = $geminiModelConfig;
         $this->guzzleClient = $guzzleClient;
-        $this->urlAPIModel = $urlAPIModel;
+        $this->addAPIKeyToGeminiModels($secretAPIKey);
+        $this->initTokensChatProperties();
+        $this->initDefaultConfigGeminiAPIJSON();
     }
 
     //---------------------- INTERFACE FUNCTIONS SECTION -----------------------
@@ -55,7 +42,7 @@ class GeminiChat implements GeminiChatInterface
 
     public function newPrompt($textPrompt, $fileURI = null, $mimeTipe = null): mixed
     {
-        Log::info("[ IN GeminiChat ->  newPrompt: ]. Gemini current model config: ", [$this->geminiModelConfig, $this->urlAPIModel]);
+        Log::info("[ IN GeminiChat ->  newPrompt: ]. Gemini current model config: ", [$this->modelConfigJSON, $this->currentGeminiModel]);
 
         // Assembling JSON File Request
         ($fileURI && $mimeTipe)
@@ -88,9 +75,75 @@ class GeminiChat implements GeminiChatInterface
         }
     }
 
+    //TODO: I should return a array instead mixed type
+    //TODO: Verify if I need to add control error management when request getGeminiModelConfig and this is the first funciotn caller. Maybe this function can return error null parameters.
+    //TODO: Thiking about before TODO, I need to verify urlAPI and secretAPIKey.
+
+    public function getGeminiModelConfig(): mixed
+    {
+        return $this->modelConfigJSON;
+    }
+
+    public function setGeminiModelConfig($temperature, $topK, $topP, $maxOutputTokens, $responseMimeType, $responseSchema = null, $currentModel = null)
+    {
+        $this->modelConfigJSON['temperature'] = $temperature;
+        $this->modelConfigJSON['topK'] = $topK;
+        $this->modelConfigJSON['topP'] = $topP;
+        $this->modelConfigJSON['maxOutputTokens'] = $maxOutputTokens;
+        $this->modelConfigJSON['responseMimeType'] = $responseMimeType;
+
+        //Add response schema if provided. When is printed tha it mean that user is using JSON MODE
+        if($responseSchema != null){
+            $this->responseSchema = $responseSchema;
+
+            $this->modelConfigJSON = array_merge($this->modelConfigJSON, $responseSchema);
+
+            Log::info("[ IN GeminiChat ->  setGeminiModelConfig: ]. Gemini current model config: ", [$this->modelConfigJSON]);
+        }
+
+
+        // TODO: Verify if I need to add urlAPI to change between models HERE
+        // TODO: Maybe is better desition crear a specific fuction to change model into interface
+    }
+    // ! NO URGENT, BUT... WE HAVE TO ADD VALIDATION BECAUSE SOME MODEL HAVE
+    // ! ... LIMIT OF TOP K AND TOP P VALUES
+    public function changeGeminiModel($geminiModelName){
+        if($geminiModelName == null){
+            Log::error("SYSTEM THREW:: [GeminiChat -> changeGeminiModel]catch Exception in GeminiAPI.php: Gemini model name is null.");
+            return;
+        }
+
+        switch ($geminiModelName) {
+            case self::GEMINI_FLASH_001:
+                $this->currentGeminiModel = $this->urlAPItoGeminiFlash001;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_001) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_FLASH_002:
+                $this->currentGeminiModel = $this->urlAPItoGeminiFlash002;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_002) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_FLASH_8B:
+                $this->currentGeminiModel = $this->urlAPItoGeminiFlash8B;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_8B) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_PRO_001:
+                $this->currentGeminiModel = $this->urlAPItoGeminiPro001;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_PRO_001) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_PRO_002:
+                $this->currentGeminiModel = $this->urlAPItoGeminiPro002;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_PRO_002) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+
+            default:
+                Log::error("SYSTEM THREW:: [GeminiChat -> changeGeminiModel]catch Exception in GeminiAPI.php: Gemini model name not found.");
+                return;
+        }
+    }
+
     //------------------------ OTHER FUNCTIONS SECTION -------------------------
     //------------------------ OTHER FUNCTIONS SECTION -------------------------
-    private function initGlobalProperties()
+    private function initTokensChatProperties()
     {
         $this->promptTokenCount = 0;
         $this->candidatesTokenCount = 0;
@@ -114,14 +167,11 @@ class GeminiChat implements GeminiChatInterface
 
         // Assembling body of request
         $this->bodyJSON['contents'] = $this->chatHistoryJSON;
-        $this->bodyJSON['generationConfig'] = $this->geminiModelConfig;
+        $this->bodyJSON['generationConfig'] = $this->modelConfigJSON;
     }
-
-
 
     public function assemblingJSONTextRequest($textPrompt){
         Log::info("[ IN GeminiChat ->  assemblingJSONTextRequest: ]. textPrompt received: " , [$textPrompt]);
-
 
         // Assembling text prompt
         $this->newTextMessageJSON['parts'][0]['text'] = $textPrompt;
@@ -131,11 +181,9 @@ class GeminiChat implements GeminiChatInterface
         Log::info("[ IN GeminiChat ->  assemblingJSONTextRequest: ]. newTextMessageJSON: " , [$this->newTextMessageJSON]);
         Log::info("[ IN GeminiChat ->  assemblingJSONTextRequest: ]. chatHistoryJSON: " , [$this->chatHistoryJSON]);
 
-
-
         // Assembling body of request
         $this->bodyJSON['contents'] = $this->chatHistoryJSON;
-        $this->bodyJSON['generationConfig'] = $this->geminiModelConfig;
+        $this->bodyJSON['generationConfig'] = $this->modelConfigJSON;
         Log::info("[ IN GeminiChat ->  assemblingJSONTextRequest: ]. bodyJSON: " , [$this->bodyJSON]);
 
     }
@@ -143,15 +191,16 @@ class GeminiChat implements GeminiChatInterface
     public function makeTextRequestToGeminiAPI(){
         // Make Request to Google Gemini REST API and get data from body
         Log::info("[ IN GeminiChat ->  makeTextRequestToGeminiAPI: ]. headersJSON" , [$this->headersJSON]);
-        Log::info("[ IN GeminiChat ->  makeTextRequestToGeminiAPI: ]. geminiModelConfig" , [$this->geminiModelConfig]);
-        Log::info("[ IN GeminiChat ->  makeTextRequestToGeminiAPI: ]. urlAPIModel" , [$this->urlAPIModel]);
+        Log::info("[ IN GeminiChat ->  makeTextRequestToGeminiAPI: ]. geminiModelConfig" , [$this->modelConfigJSON]);
+        Log::info("[ IN GeminiChat ->  makeTextRequestToGeminiAPI: ]. urlAPIModel" , [$this->currentGeminiModel]);
 
 
-        $response = $this->guzzleClient->request('POST', $this->urlAPIModel, [
+        $response = $this->guzzleClient->request('POST', $this->currentGeminiModel, [
             'headers' => $this->headersJSON,
             'json' => $this->bodyJSON
         ]);
 
+        // ! TODO: NOT URGENT BUT... ADD ERROR HANDLING FOR BAD RESPONSES, OTHERWISE RETURN HTML ERROR INSTEAD JSON ERROR
         $responseData = json_decode($response->getBody()->getContents(), true);
 
         // Get text message, update chat history and return response
@@ -164,7 +213,7 @@ class GeminiChat implements GeminiChatInterface
 
     public function makeFileRequestToGeminiAPI(){
         // Make Request to Google Gemini REST API and get data from body
-        $response = $this->guzzleClient->request('POST', $this->urlAPIModel, [
+        $response = $this->guzzleClient->request('POST', $this->currentGeminiModel, [
             'headers' => $this->headersJSON,
             'json' => $this->bodyJSON
         ]);
@@ -200,10 +249,25 @@ class GeminiChat implements GeminiChatInterface
         $this->totalTokenHistoryChatCount += $this->totalTokenCount;
     }
 
-    public function updateGeminiModelConfig($newGeminiModelConfig)
+    private function initDefaultConfigGeminiAPIJSON()
     {
-        $this->geminiModelConfig = array_merge($this->geminiModelConfig, $newGeminiModelConfig);
+        $this->modelConfigJSON['temperature'] = 1;
+        $this->modelConfigJSON['topK'] = 40;
+        $this->modelConfigJSON['topP'] = 0.95;
+        $this->modelConfigJSON['maxOutputTokens'] = 8192;
+        $this->modelConfigJSON['responseMimeType'] = "text/plain";
+
+        $this->currentGeminiModel = $this->urlAPItoGeminiFlash001;
     }
+
+    private function addAPIKeyToGeminiModels($secretAPIKey){
+        $this->urlAPItoGeminiFlash001 .= $secretAPIKey;
+        $this->urlAPItoGeminiFlash002 .= $secretAPIKey;
+        $this->urlAPItoGeminiFlash8B .= $secretAPIKey;
+        $this->urlAPItoGeminiPro001 .= $secretAPIKey;
+        $this->urlAPItoGeminiPro002 .= $secretAPIKey;
+    }
+
 
 
 }

@@ -43,6 +43,7 @@ class UploadFileToGeminiService implements UploadFileToGeminiServiceInterface
     // ---------------------------------------------------------------
     // ----------------- GETTERS AND SETTERS SECTION -----------------
     // ---------------------------------------------------------------
+
     public function getURIFromPath(string $filePath)
     {
         // return $this->getURI(new \Illuminate\Http\UploadedFile($path, basename($path)));
