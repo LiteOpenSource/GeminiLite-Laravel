@@ -9,7 +9,7 @@
 
 ## Why use Gemini lite instead other open source Gemini Sdk?
 
-Thanks to its minimalist **syntax based on Facades**, you can integrate AI functionalities effortlessly. Soon, it will include a **token and request limit management system inspired by Laravel Permission**, perfect for streamlining monetizable projects. Moreover, **its support is guaranteed until 2026**, as it will be used in two projects set to be launched into production this year.Support the project and help extend its lifespan. If you'd like to contribute, feel free to contact me.
+Thanks to its minimalist **syntax based on Facades**, you can integrate AI functionalities effortlessly. Soon, it will include a **✨token and request limit management system inspired by Laravel Permission✨**, perfect for streamlining monetizable projects. Moreover, **its support is guaranteed until 2026**, as it will be used in two projects set to be launched into production this year.Support the project and help extend its lifespan. If you'd like to contribute, feel free to contact me.
 
 ## Features
 
@@ -26,19 +26,23 @@ Feature status:
 | Text prompt with file(Iamge, pdf, etc) support    | 🟢 |
 | Chat history support                              | 🟢 |
 | Change model config in runtime                    | 🟢 |
-| Change Gemini model                               | 🟢 |
+| Change between Gemini models                      | 🟢 |
+| JSON mode support                                 | 🟢 |
 | Easy upload file to get uri and mime type         | 🟢 |
 | Easy get current gemini config function           | 🟢 |
-| Easy get current history function                 | 🟢 |
-| Limit tokens and request support                  | 🟡 |
+| Easy get chat history of current chat instance    | 🔴 |
+| ✨ Limit tokens and request support ✨           | 🟡 |
 | Tokens counter before to do prompt                | 🟡 |
 | Gemini flash 2.0 beta                             | 🟡 |
+| Automatic unite testing                           | 🟡 |
+| Embedding support                                 | 🔴 |
 | Image generator support                           | 🟣 |
-| Embedding support                                 | 🟣 |
 
 ## Table of Contents
 
-1. [Installation](#installation)
+1. [Get started](#get-started)
+   - [Requeriments](#requeriments)
+   - [Installation](#installation)
 
 2. [Configuration](#configuration)
 
@@ -47,6 +51,9 @@ Feature status:
    - [Creating a New Chat](#creating-a-new-chat)  
    - [Sending Prompts](#sending-prompts)  
    - [Changing Model Configuration](#changing-model-configuration)
+   - [Using JSON Mode](#using-json-mode)
+   - [Changing Gemini Model](#changing-gemini-model)
+   - [Getting Current Model Configuration](#getting-current-model-configuration)
 
 4. [UploadFileToGeminiService](#uploadfiletogeminiservice)
 
@@ -57,10 +64,26 @@ Feature status:
    - [Text-Based Chat](#text-based-chat)  
    - [Image-Based Chat](#image-based-chat)  
    - [Changing Configuration at Runtime](#changing-configuration-at-runtime)
+   - [JSON Mode Chat](#json-mode-chat)
+   - [Changing Gemini Model](#changing-gemini-model-example)
+   - [Getting Current Model Configuration](#getting-current-model-configuration-example)
 
 6. [License](#license)
 
-## Installation
+## Get Started
+
+### Requeriments
+
+You have to verify have added in your project:
+
+- php: Minimum version ^8.0
+- guzzlehttp/guzzle: Minimum version ^7.0
+- illuminate/console: Minimum version ^9.0
+- illuminate/database: Minimum version ^9.0
+- illuminate/http: Minimum version ^9.0
+- illuminate/support: Minimum version ^9.0
+
+### Installation
 
 To install the Gemini Lite for Laravel package, use ```composer require liteopensource/gemini-lite-laravel``` or add the following line to your `composer.json`
 
@@ -111,6 +134,45 @@ You can modify the model configuration at runtime:
 
 ```php
 $chat->setGeminiModelConfig($temperature, $topK, $topP, $maxOutputTokens, $returnMimeType);
+```
+
+### Using JSON Mode
+
+```php
+$responseSchema = [
+    // Your JSON schema here
+];
+
+$chat->setGeminiModelConfig(
+    temperature: 1,
+    topK: 40,
+    topP: 0.95,
+    maxOutputTokens: 8192,
+    responseMimeType: 'application/json',
+    responseSchema: $responseSchema
+);
+```
+
+### Changing Gemini Model
+
+You can switch between different Gemini models, the curren model avaibles are:
+
+- gemini-1.5-flash
+- gemini-1.5-flash-002
+- gemini-1.5-flash-8b
+- gemini-1.5-pro
+- gemini-1.5-pro-002
+
+```php
+$chat->changeGeminiModel("gemini-1.5-pro-002");
+```
+
+### Getting Current Model Configuration
+
+You can retrieve the current configuration of the Gemini model:
+
+```php
+$currentConfig = $chat->getGeminiModelConfig();
 ```
 
 ## UploadFileToGeminiService
@@ -183,6 +245,123 @@ $response = $gemini->newPrompt(
 $gemini = Gemini::newChat();
 $gemini->setGeminiModelConfig(1, 40, 0.95, 8192, 'text/plain');
 $response = $gemini->newPrompt('Generate a creative story');
+```
+
+### JSON Mode Chat
+
+Here's an example of using JSON mode to generate cookie recipes:
+
+```php
+$responseSchema = [
+    "responseSchema" => [
+        "type" => "object",
+        "description" => "Return some of the most popular cookie recipes",
+        "properties" => [
+            "recipes" => [
+                "type" => "array",
+                "items" => [
+                    "type" => "object",
+                    "properties" => [
+                        "recipe_name" => [
+                            "type" => "string",
+                            "description" => "name of recipe using upper case"
+                        ],
+                        "ingredients_number" => [
+                            "type" => "number"
+                        ]
+                    ],
+                    "required" => [
+                        "recipe_name",
+                        "ingredients_number"
+                    ]
+                ]
+            ],
+            "status_response" => [
+                "type" => "array",
+                "items" => [
+                    "type" => "object",
+                    "properties" => [
+                        "sucess" => [
+                            "type" => "string",
+                            "description" => "Short message in uppercase about request"
+                        ],
+                        "code" => [
+                            "type" => "string",
+                            "description" => "Status code",
+                            "enum" => [
+                                "200",
+                                "400"
+                            ]
+                        ]
+                    ],
+                    "required" => [
+                        "sucess",
+                        "code"
+                    ]
+                ]
+            ]
+        ],
+        "required" => [
+            "recipes",
+            "status_response"
+        ]
+    ]
+];
+
+$geminiChat = Gemini::newChat();
+$geminiChat->setGeminiModelConfig(
+    temperature: 1,
+    topK: 40,
+    topP: 0.95,
+    maxOutputTokens: 8192,
+    responseMimeType: 'application/json',
+    responseSchema: $responseSchema
+);
+
+$response = $geminiChat->newPrompt("Generate a list of cookie recipes. Make the outputs in JSON format.");
+
+$responseObject = json_decode($response);
+$recipes = $responseObject->recipes;
+$firstRecipeName = $recipes[0]->recipe_name;
+
+// You can now work with the structured JSON response
+```
+
+### Changing Gemini Model Example
+
+You can compare responses from different Gemini models:
+
+```php
+$geminiChat1 = Gemini::newChat();
+$geminiChat1->changeGeminiModel("gemini-1.5-flash-8b");
+$response1 = $geminiChat1->newPrompt("Your prompt here");
+
+$geminiChat2 = Gemini::newChat();
+$geminiChat2->changeGeminiModel("gemini-1.5-pro-002");
+$response2 = $geminiChat2->newPrompt("Your prompt here");
+
+// Compare $response1 and $response2
+```
+
+### Getting Current Model Configuration Example
+
+You can compare responses from different Gemini models:
+
+```php
+use LiteOpenSource\GeminiLiteLaravel\Src\Facades\Gemini;
+
+$geminiChat = Gemini::newChat();
+
+// Get initial configuration
+$initialModelConfig = $geminiChat->getGeminiModelConfig();
+
+// Change configuration
+$geminiChat->setGeminiModelConfig(2, 64, 1, 8192, 'text/plain');
+
+// Get updated configuration
+$updatedModelConfig = $geminiChat->getGeminiModelConfig();
+
+// Now you can compare or use these configurations
 ```
 
 ## License
