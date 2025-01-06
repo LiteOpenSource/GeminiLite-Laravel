@@ -38,19 +38,26 @@ class GeminiLiteServiceProvider extends ServiceProvider
             __DIR__.'/../../config/geminilite.php' => config_path('geminilite.php'),
         ], 'geminilite-config');
 
+        // PUBLISH: Publishing seeder file to seeder folder --tag="geminilite-config"
+
+        $this->publishes([
+            //__DIR__.'/../Database/Migrations/0000_00_00_000000_create_gemini_lite_limit_tokes_data_table.php' => database_path('migrations/0000_00_00_000000_create_gemini_lite_auth_data_table.php'),
+            __DIR__.'/../Database/Seeders/GeminiLiteLimitTokensRulesSeeder.php' => database_path('seeders/GeminiLiteAuthDataSeeder.php'),
+        ], 'geminilite-limit-tokes');
+
         // PUBLISH: Migrations
         //TODO: This does not work, does't copy migratioons to migrations folder
         $this->publishesMigrations([
-            __DIR__ . '/../database/migrations' => database_path('migrations')
+            __DIR__ . '/../Database/Migrations' => database_path('migrations')
         ]);
 
         //TODO: Try if this works and it's necesary
         // PUBLISH: Comand tha run seeder comand using "php artisan geminilite:seed"
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                \LiteOpenSource\GeminiLiteLaravel\Src\Commands\RunSeederCommand::class,
-            ]);
-        }
+        // if ($this->app->runningInConsole()) {
+        //     $this->commands([
+        //         \LiteOpenSource\GeminiLiteLaravel\Src\Commands\RunSeederCommand::class,
+        //     ]);
+        // }
     }
 }
 

@@ -24,9 +24,15 @@ class UploadFileToGeminiService implements UploadFileToGeminiServiceInterface
     }
 
     //TODO: DONNT WORK FOR THE MOMENT, WE HAVE TO NEED IF I ADD LIOVEWIRE TO USER FILES OR I ANLY TO WOR WITH PATHS
-    public function processFileFromFile($file): mixed
+    public function processFileFromUpload($file): mixed
     {
-        return $this->getURIFromFile($file);
+        $filePath = $file->getRealPath();
+        $this->getURIFromPath($filePath);
+
+        if ($this->fileUri === null || $this->fileMimeType === null) {
+            throw new \RuntimeException('File upload failed or resulted in null values');
+        }
+        return new UploadFileToGeminiResult( $this->fileUri, $this->fileMimeType);
     }
 
 

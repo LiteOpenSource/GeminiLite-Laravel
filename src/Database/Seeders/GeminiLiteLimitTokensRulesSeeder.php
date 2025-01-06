@@ -6,7 +6,7 @@ namespace LiteOpenSource\GeminiLiteLaravel\Src\Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class GeminiLiteDataSeeder extends Seeder
+class GeminiLiteLimitTokensRulesSeeder extends Seeder
 {
     public function run()
     {
