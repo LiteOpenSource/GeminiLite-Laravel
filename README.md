@@ -40,35 +40,32 @@ Feature status:
 
 ## Table of Contents
 
-1. [Get started](#get-started)
-   - [Requeriments](#requeriments)
-   - [Installation](#installation)
-
-2. [Configuration](#configuration)
-
-3. [GeminiService](#geminiservice)
-
-   - [Creating a New Chat](#creating-a-new-chat)  
-   - [Sending Prompts](#sending-prompts)  
-   - [Changing Model Configuration](#changing-model-configuration)
-   - [Using JSON Mode](#using-json-mode)
-   - [Changing Gemini Model](#changing-gemini-model)
-   - [Getting Current Model Configuration](#getting-current-model-configuration)
-
-4. [UploadFileToGeminiService](#uploadfiletogeminiservice)
-
-   - [Processing Files from a Path](#processing-files-from-a-path)  
-   - [Processing Uploaded Files](#processing-uploaded-files)  
-
-5. [Examples](#examples)  
-   - [Text-Based Chat](#text-based-chat)  
-   - [Image-Based Chat](#image-based-chat)  
-   - [Changing Configuration at Runtime](#changing-configuration-at-runtime)
-   - [JSON Mode Chat](#json-mode-chat)
-   - [Changing Gemini Model](#changing-gemini-model-example)
-   - [Getting Current Model Configuration](#getting-current-model-configuration-example)
-
-6. [License](#license)
+- [Gemini Lite for Laravel - Documentation](#gemini-lite-for-laravel---documentation)
+  - [Why use Gemini lite instead other open source Gemini Sdk?](#why-use-gemini-lite-instead-other-open-source-gemini-sdk)
+  - [Features](#features)
+  - [Table of Contents](#table-of-contents)
+  - [Get Started](#get-started)
+    - [Requeriments](#requeriments)
+    - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [GeminiService](#geminiservice)
+    - [Creating a New Chat](#creating-a-new-chat)
+    - [Sending Prompts](#sending-prompts)
+    - [Changing Model Configuration](#changing-model-configuration)
+    - [Using JSON Mode](#using-json-mode)
+    - [Changing Gemini Model](#changing-gemini-model)
+    - [Getting Current Model Configuration](#getting-current-model-configuration)
+  - [UploadFileToGeminiService](#uploadfiletogeminiservice)
+    - [Processing Files from a Path](#processing-files-from-a-path)
+    - [Processing Uploaded Files](#processing-uploaded-files)
+  - [Examples](#examples)
+    - [Text-Based Chat](#text-based-chat)
+    - [Image-Based Chat](#image-based-chat)
+    - [Changing Configuration at Runtime](#changing-configuration-at-runtime)
+    - [JSON Mode Chat](#json-mode-chat)
+    - [Changing Gemini Model Example](#changing-gemini-model-example)
+    - [Getting Current Model Configuration Example](#getting-current-model-configuration-example)
+  - [License](#license)
 
 ## Get Started
 
@@ -158,10 +155,12 @@ $chat->setGeminiModelConfig(
 You can switch between different Gemini models, the curren model avaibles are:
 
 - gemini-1.5-flash
-- gemini-1.5-flash-002
 - gemini-1.5-flash-8b
 - gemini-1.5-pro
-- gemini-1.5-pro-002
+- gemini-2.0-flash-exp
+- gemini-exp-1206
+- gemini-2.0-flash-thinking-exp-1219
+- learnlm-1.5-pro-experimental
 
 ```php
 $chat->changeGeminiModel("gemini-1.5-pro-002");
