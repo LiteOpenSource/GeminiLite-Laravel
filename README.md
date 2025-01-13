@@ -133,6 +133,11 @@ You can modify the model configuration at runtime:
 $chat->setGeminiModelConfig($temperature, $topK, $topP, $maxOutputTokens, $returnMimeType);
 ```
 
+> **Note:** The `topK` and `topP` parameters have specific limits depending on the model you are using.
+> - For `gemini-1.5-pro` model, the `topK` parameter is not supported.
+> - For all other models, the `topK` parameter must be between 1 and 40.
+> - The `topP` parameter must be between 0.0 and 1.0 for all models.
+
 ### Using JSON Mode
 
 ```php
