@@ -145,6 +145,10 @@ class GeminiChat implements GeminiChatInterface
                 $this->currentGeminiModel = $this->urlAPItoGeminiFlashV2Exp;
                 Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_V2_0_EXP) changed current model config: ", [$this->currentGeminiModel]);
                 break;
+            case self::GEMINI_V2:
+                $this->currentGeminiModel = $this->urlAPItoGeminiV2;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_V2) changed current model config: ", [$this->currentGeminiModel]);
+                break;
             case self::GEMINI_EXP_1206:
                 $this->currentGeminiModel = $this->urlAPItoGeminiExp1206;
                 Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_V2_0_EXP) changed current model config: ", [$this->currentGeminiModel]);
@@ -165,7 +169,14 @@ class GeminiChat implements GeminiChatInterface
                 //$this->currentGeminiModel = $this->urlAPItoGeminiPro002;
                 //Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_PRO_002) changed current model config: ", [$this->currentGeminiModel]);
                 //break;
-
+            case self::GEMINI_V2_FLASH_LITE_PREVIEW:
+                $this->currentGeminiModel = $this->urlAPItoGeminiV2FlashLitePreview;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_V2_FLASH_LITE_PREVIEW) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_2_0_PRO_EXP:
+                $this->currentGeminiModel = $this->urlAPItoGemini2ProExp;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_2_0_PRO_EXP) changed current model config: ", [$this->currentGeminiModel]);
+                break;
             default:
                 Log::error("SYSTEM THREW:: [GeminiChat -> changeGeminiModel]catch Exception in GeminiAPI.php: Gemini model name not found.");
                 return;
@@ -296,11 +307,14 @@ class GeminiChat implements GeminiChatInterface
         //$this->urlAPItoGeminiFlash002 .= $secretAPIKey;
         $this->urlAPItoGeminiFlash8B .= $secretAPIKey;
         $this->urlAPItoGeminiFlashV2Exp .= $secretAPIKey;
+        $this->urlAPItoGeminiV2 .= $secretAPIKey;
         $this->urlAPItoGeminiExp1206 .= $secretAPIKey;
         $this->urlAPItoLearnLMProExp .= $secretAPIKey;
         $this->urlAPItoGeminiFlashV2ThinkingExp .= $secretAPIKey;
         $this->urlAPItoGeminiPro001 .= $secretAPIKey;
         //$this->urlAPItoGeminiPro002 .= $secretAPIKey;
+        $this->urlAPItoGeminiV2FlashLitePreview .= $secretAPIKey;
+        $this->urlAPItoGemini2ProExp .= $secretAPIKey;
     }
 
     protected function getCurrentModelConstant(): string
@@ -320,6 +334,12 @@ class GeminiChat implements GeminiChatInterface
                 return self::LEARNLM_1_5_PRO_EXP;
             case $this->urlAPItoGeminiFlashV2ThinkingExp:
                 return self::GEMINI_FLASH_V2_0_THINKING_EXP;
+            case $this->urlAPItoGeminiV2:
+                return self::GEMINI_V2;
+            case $this->urlAPItoGeminiV2FlashLitePreview:
+                return self::GEMINI_V2_FLASH_LITE_PREVIEW;
+            case $this->urlAPItoGemini2ProExp:
+                return self::GEMINI_2_0_PRO_EXP;
             // Add other cases as needed
             default:
                 throw new \InvalidArgumentException("Unknown model URL: {$this->currentGeminiModel}");
