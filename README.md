@@ -30,7 +30,7 @@ Feature status:
 | JSON mode support                                 | 🟢 |
 | Easy upload file to get uri and mime type         | 🟢 |
 | Easy get current gemini config function           | 🟢 |
-| Easy get chat history of current chat instance    | 🔴 |
+| Easy get chat history of current chat instance    | 🟢 |
 | ✨ Limit tokens and request support ✨           | 🟢 |
 | Tokens counter before to do prompt                | 🟢 |
 | Gemini flash 2.0 beta                             | 🟢 |
@@ -55,6 +55,7 @@ Feature status:
     - [Using JSON Mode](#using-json-mode)
     - [Changing Gemini Model](#changing-gemini-model)
     - [Getting Current Model Configuration](#getting-current-model-configuration)
+    - [Getting Chat History](#getting-chat-history)
   - [UploadFileToGeminiService](#uploadfiletogeminiservice)
     - [Processing Files from a Path](#processing-files-from-a-path)
     - [Processing Uploaded Files](#processing-uploaded-files)
@@ -195,6 +196,26 @@ You can retrieve the current configuration of the Gemini model:
 
 ```php
 $currentConfig = $chat->getGeminiModelConfig();
+```
+
+### Getting Chat History
+
+You can retrieve the complete chat history of your conversation with Gemini:
+
+```php
+$gemini = Gemini::newChat();
+
+// Make some prompts
+$response1 = $gemini->newPrompt('Hello');
+$response2 = $gemini->newPrompt('How are you?');
+
+// Get the full chat history
+$history = $gemini->getHistory();
+
+// The history contains all messages exchanged, including both user prompts and model responses
+// Each message contains:
+// - role: "user" or "model"
+// - parts: array containing the text or file data
 ```
 
 ## UploadFileToGeminiService
