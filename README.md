@@ -20,10 +20,10 @@ Feature status:
 - 🔴 Feature doesn't started
 - 🟣 Feature doesn't planet **(If you want contribute with this, contact me)**
 
-|               In progress              | Progres Status |
+|               In progress              | Progress Status |
 |---------------------------------------------------|-----|
 | Text prompt support                               | 🟢 |
-| Text prompt with file(Iamge, pdf, etc) support    | 🟢 |
+| Text prompt with file(Image, pdf, etc) support    | 🟢 |
 | Chat history support                              | 🟢 |
 | Change model config in runtime                    | 🟢 |
 | Change between Gemini models                      | 🟢 |
@@ -31,11 +31,11 @@ Feature status:
 | Easy upload file to get uri and mime type         | 🟢 |
 | Easy get current gemini config function           | 🟢 |
 | Easy get chat history of current chat instance    | 🔴 |
-| ✨ Limit tokens and request support ✨           | 🟡 |
-| Tokens counter before to do prompt                | 🟡 |
-| Gemini flash 2.0 beta                             | 🟡 |
-| Automatic unite testing                           | 🟡 |
-| Embedding support                                 | 🔴 |
+| ✨ Limit tokens and request support ✨           | 🟢 |
+| Tokens counter before to do prompt                | 🟢 |
+| Gemini flash 2.0 beta                             | 🟢 |
+| Automatic unit testing                            | 🟡 |
+| Embedding support                                 | 🟢 |
 | Image generator support                           | 🟣 |
 
 ## Table of Contents
@@ -65,6 +65,8 @@ Feature status:
     - [Is active](#is-active)
     - [Update usage](#update-usage)
     - [Store Gemini Request](#store-gemini-request)
+  - [EmbeddingService](#embeddingservice)
+    - [Basic Usage](#basic-usage)
   - [Examples](#examples)
     - [Text-Based Chat](#text-based-chat)
     - [Image-Based Chat](#image-based-chat)
@@ -306,6 +308,32 @@ $testUser->storeGeminiRequest(requestType: "Test",
  requestSuccessful: true, 
  requestData: ["request"=> $prompt],
  responseData: ["response"=> $response]); 
+```
+
+## EmbeddingService
+
+This service provides text embedding capabilities using Gemini's text-embedding-004 model.
+
+### Basic Usage
+
+```php
+use LiteOpenSource\GeminiLiteLaravel\Src\Facades\Embedding;
+
+// Generate embedding for a single text
+$embedding = Embedding::embedText("Hello world");
+
+// Generate batch embeddings
+$embeddings = Embedding::embedBatch([
+    "First text",
+    "Second text",
+    "Third text"
+]);
+
+// With additional options
+$embedding = Embedding::embedText($text, [
+    'taskType' => 'SEMANTIC_SIMILARITY',
+    'title' => 'Document Title'
+]);
 ```
 
 ## Examples
