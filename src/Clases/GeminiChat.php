@@ -1,6 +1,7 @@
 <?php
 namespace LiteOpenSource\GeminiLiteLaravel\Src\Clases;
 
+
 use LiteOpenSource\GeminiLiteLaravel\Src\Contracts\GeminiChatInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ConnectException;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use LiteOpenSource\GeminiLiteLaravel\Src\Traits\GeminiConfigAndPropertiesJSONStructures;
 use LiteOpenSource\GeminiLiteLaravel\Src\Traits\GeminiRequestAndResponsesJSONStructures;
 use LiteOpenSource\GeminiLiteLaravel\Src\Traits\GeminiTokenPropertiesJSONStructures;
+use Liteopensource\GeminiLiteLaravel\Src\Traits\GeminiModelValidations;
 
 class GeminiChat implements GeminiChatInterface
 {
@@ -20,6 +22,7 @@ class GeminiChat implements GeminiChatInterface
     use GeminiConfigAndPropertiesJSONStructures;
     use GeminiRequestAndResponsesJSONStructures;
     use GeminiTokenPropertiesJSONStructures;
+    use GeminiModelValidations;
 
     //---------------------------- CONSTRUCTOR SECTION --------------------------
     //---------------------------- CONSTRUCTOR SECTION --------------------------
@@ -35,11 +38,11 @@ class GeminiChat implements GeminiChatInterface
     //---------------------- INTERFACE FUNCTIONS SECTION -----------------------
     // TODO: Add function in future
 
-    public function getHistory(): mixed
-    {
-        return true;
-    }
-
+    
+        public function getHistory(): array
+        {
+            return $this->chatHistoryJSON;
+        }
     public function newPrompt($textPrompt, $fileURI = null, $mimeTipe = null): mixed
     {
         Log::info("[ IN GeminiChat ->  newPrompt: ]. Gemini current model config: ", [$this->modelConfigJSON, $this->currentGeminiModel]);
@@ -86,12 +89,24 @@ class GeminiChat implements GeminiChatInterface
 
     public function setGeminiModelConfig($temperature, $topK, $topP, $maxOutputTokens, $responseMimeType, $responseSchema = null, $currentModel = null)
     {
+        // Use the current model constant instead of parsing URL
+        $modelName = $currentModel ?? $this->getCurrentModelConstant();
+        
+        $this->validateTopK($modelName, $topK);
+        Log::info("[ IN GeminiChat ->  setGeminiModelConfig: ]. topK validated: ", [$topK]);
+        $this->validateTopP($modelName, $topP);
+        Log::info("[ IN GeminiChat ->  setGeminiModelConfig: ]. topP validated: ", [$topP]);
+
+        $this->validateTemperature($modelName, $temperature);
+        Log::info("[ IN GeminiChat ->  setGeminiModelConfig: ]. temperature validated: ", [$temperature]);
+
         $this->modelConfigJSON['temperature'] = $temperature;
         $this->modelConfigJSON['topK'] = $topK;
         $this->modelConfigJSON['topP'] = $topP;
         $this->modelConfigJSON['maxOutputTokens'] = $maxOutputTokens;
         $this->modelConfigJSON['responseMimeType'] = $responseMimeType;
 
+        
         //Add response schema if provided. When is printed tha it mean that user is using JSON MODE
         if($responseSchema != null){
             $this->responseSchema = $responseSchema;
@@ -118,22 +133,38 @@ class GeminiChat implements GeminiChatInterface
                 $this->currentGeminiModel = $this->urlAPItoGeminiFlash001;
                 Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_001) changed current model config: ", [$this->currentGeminiModel]);
                 break;
-            case self::GEMINI_FLASH_002:
-                $this->currentGeminiModel = $this->urlAPItoGeminiFlash002;
-                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_002) changed current model config: ", [$this->currentGeminiModel]);
-                break;
+            //case self::GEMINI_FLASH_002:
+                //$this->currentGeminiModel = $this->urlAPItoGeminiFlash002;
+                //Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_002) changed current model config: ", [$this->currentGeminiModel]);
+                //break;
             case self::GEMINI_FLASH_8B:
                 $this->currentGeminiModel = $this->urlAPItoGeminiFlash8B;
                 Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_8B) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_FLASH_V2_0_EXP:
+                $this->currentGeminiModel = $this->urlAPItoGeminiFlashV2Exp;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_V2_0_EXP) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_EXP_1206:
+                $this->currentGeminiModel = $this->urlAPItoGeminiExp1206;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_V2_0_EXP) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::LEARNLM_1_5_PRO_EXP:
+                $this->currentGeminiModel = $this->urlAPItoLearnLMProExp;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_V2_0_EXP) changed current model config: ", [$this->currentGeminiModel]);
+                break;
+            case self::GEMINI_FLASH_V2_0_THINKING_EXP:
+                $this->currentGeminiModel = $this->urlAPItoGeminiFlashV2ThinkingExp;
+                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_FLASH_V2_0_THINKING_EXP) changed current model config: ", [$this->currentGeminiModel]);
                 break;
             case self::GEMINI_PRO_001:
                 $this->currentGeminiModel = $this->urlAPItoGeminiPro001;
                 Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_PRO_001) changed current model config: ", [$this->currentGeminiModel]);
                 break;
-            case self::GEMINI_PRO_002:
-                $this->currentGeminiModel = $this->urlAPItoGeminiPro002;
-                Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_PRO_002) changed current model config: ", [$this->currentGeminiModel]);
-                break;
+            //case self::GEMINI_PRO_002:
+                //$this->currentGeminiModel = $this->urlAPItoGeminiPro002;
+                //Log::info("[ IN GeminiChat ->  changeGeminiModel: ]. Gemini model (GEMINI_PRO_002) changed current model config: ", [$this->currentGeminiModel]);
+                //break;
 
             default:
                 Log::error("SYSTEM THREW:: [GeminiChat -> changeGeminiModel]catch Exception in GeminiAPI.php: Gemini model name not found.");
@@ -262,12 +293,38 @@ class GeminiChat implements GeminiChatInterface
 
     private function addAPIKeyToGeminiModels($secretAPIKey){
         $this->urlAPItoGeminiFlash001 .= $secretAPIKey;
-        $this->urlAPItoGeminiFlash002 .= $secretAPIKey;
+        //$this->urlAPItoGeminiFlash002 .= $secretAPIKey;
         $this->urlAPItoGeminiFlash8B .= $secretAPIKey;
+        $this->urlAPItoGeminiFlashV2Exp .= $secretAPIKey;
+        $this->urlAPItoGeminiExp1206 .= $secretAPIKey;
+        $this->urlAPItoLearnLMProExp .= $secretAPIKey;
+        $this->urlAPItoGeminiFlashV2ThinkingExp .= $secretAPIKey;
         $this->urlAPItoGeminiPro001 .= $secretAPIKey;
-        $this->urlAPItoGeminiPro002 .= $secretAPIKey;
+        //$this->urlAPItoGeminiPro002 .= $secretAPIKey;
     }
 
+    protected function getCurrentModelConstant(): string
+    {
+        switch($this->currentGeminiModel) {
+            case $this->urlAPItoGeminiFlash001:
+                return self::GEMINI_FLASH_001;
+            case $this->urlAPItoGeminiPro001:
+                return self::GEMINI_PRO_001;
+            case $this->urlAPItoGeminiFlash8B:
+                return self::GEMINI_FLASH_8B;
+            case $this->urlAPItoGeminiFlashV2Exp:
+                return self::GEMINI_FLASH_V2_0_EXP;
+            case $this->urlAPItoGeminiExp1206:
+                return self::GEMINI_EXP_1206;
+            case $this->urlAPItoLearnLMProExp:
+                return self::LEARNLM_1_5_PRO_EXP;
+            case $this->urlAPItoGeminiFlashV2ThinkingExp:
+                return self::GEMINI_FLASH_V2_0_THINKING_EXP;
+            // Add other cases as needed
+            default:
+                throw new \InvalidArgumentException("Unknown model URL: {$this->currentGeminiModel}");
+        }
+    }
 
 
 }
