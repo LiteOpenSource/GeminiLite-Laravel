@@ -166,16 +166,25 @@ $chat->setGeminiModelConfig(
 
 ### Changing Gemini Model
 
-You can switch between different Gemini models, the curren model avaibles are:
+You can switch between different Gemini models. The currently available models are:
 
+Stable Models:
 - gemini-1.5-flash
-- gemini-1.5-flash-002
-- gemini-1.5-flash-8b
 - gemini-1.5-pro
-- gemini-1.5-pro-002
+- gemini-1.5-flash-8b
+- gemini-2.0-flash
+- gemini-2.0-flash-lite-preview-02-05
+- gemini-2.0-pro-exp-02-05
+- gemini-2.0-flash-thinking-exp-01-21
+
+
+
+Experimental Models:
+- gemini-2.0-flash-exp
+- learnlm-1.5-pro-experimental
 
 ```php
-$chat->changeGeminiModel("gemini-1.5-pro-002");
+$chat->changeGeminiModel("gemini-2.0-flash"); // Example using new model
 ```
 
 ### Getting Current Model Configuration
