@@ -3,6 +3,7 @@
     "version": "0.0.3",
     "description": "Redisingned and easy to use Gemini Lite SDK for Laravel",
     "type": "library",
+    "version": "0.1.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -13,6 +14,14 @@
         {
             "name": "JoseLopezLara",
             "email": "jose.lopez.lara.cto@gmail.com"
+        },
+        {
+            "name": "JonathanSerafinCM",
+            "email": "iscjonathanserafin@gmail.com"
+        },
+        {
+            "name": "edgarml01",
+            "email": "egarmola08@gmail.com"
         }
     ],
     "minimum-stability": "stable",
