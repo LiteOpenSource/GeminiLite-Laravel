@@ -18,6 +18,7 @@ trait GeminiConfigAndPropertiesJSONStructures
     public const GEMINI_FLASH_V2_0_EXP_IMAGE_GENERATION = "gemini-2.0-flash-exp-image-generation";//Present
     //Gemini 2.5
     public const GEMINI_2_5_PRO_PREVIEW = "gemini-2.5-pro-preview-03-25";//Present
+    public const GEMINI_2_5_PRO_EXP = "gemini-2.5-pro-exp-03-25";//Present - Actualizado de preview a exp
     
 
     // Model Config structure that represente the JSON config and has default config
@@ -46,6 +47,7 @@ trait GeminiConfigAndPropertiesJSONStructures
     private $urlAPItoGeminiV2FlashLitePreview = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite-preview-02-05:generateContent?key=";
     private $urlAPItoGeminiFlashV2ExpImageGeneration = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=";
     private $urlAPItoGemini25ProPreview = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-03-25:generateContent?key=";
+    private $urlAPItoGemini25ProExp = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-exp-03-25:generateContent?key=";
 
     // ! TODO: Verivy if this model are available
     //private $urlAPItoGeminiFlash002 = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent?key=";
