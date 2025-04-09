@@ -1,6 +1,5 @@
 {
     "name": "liteopensource/gemini-lite-laravel",
-    "version": "0.0.3",
     "description": "Redisingned and easy to use Gemini Lite SDK for Laravel",
     "type": "library",
     "license": "MIT",
