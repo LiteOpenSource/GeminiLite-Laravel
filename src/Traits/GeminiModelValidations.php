@@ -16,11 +16,15 @@ trait GeminiModelValidations
         // Definir los rangos válidos para cada modelo
         $modelRanges = [
             'gemini-2.0-flash-exp' => ['topK' => [1, 40]],
-            'gemini-exp-1206' => ['topK' => [1, 40]],
             'gemini-2.0-flash-thinking-exp-01-21' => ['topK' => [1, 40]],
             'learnlm-1.5-pro-experimental' => ['topK' => [1, 40]],
             'gemini-1.5-flash' => ['topK' => [1, 40]],
             'gemini-1.5-flash-8b' => ['topK' => [1, 40]],
+            'gemini-2.0-flash' => ['topK' => [1, 40]],
+            'gemini-2.0-flash-lite' => ['topK' => [1, 40]],
+            'gemini-2.0-flash-lite-preview-02-05' => ['topK' => [1, 40]],
+            'gemini-2.0-flash-exp-image-generation' => ['topK' => [1, 40]],
+            'gemini-2.5-pro-preview-03-25' => ['topK' => [1, 40]],
         ];
 
         if ($topK === null) {
@@ -52,12 +56,16 @@ trait GeminiModelValidations
         // Definir los rangos válidos para cada modelo
          $modelRanges = [
             'gemini-2.0-flash-exp' => ['topP' => [0.0, 1.0]],
-            'gemini-exp-1206' => ['topP' => [0.0, 1.0]],
             'gemini-2.0-flash-thinking-exp-01-21' => ['topP' => [0.0, 1.0]],
             'learnlm-1.5-pro-experimental' => ['topP' => [0.0, 1.0]],
             'gemini-1.5-pro' => ['topP' => [0.0, 1.0]],
             'gemini-1.5-flash' => ['topP' => [0.0, 1.0]],
             'gemini-1.5-flash-8b' => ['topP' => [0.0, 1.0]],
+            'gemini-2.0-flash' => ['topP' => [0.0, 1.0]],
+            'gemini-2.0-flash-lite' => ['topP' => [0.0, 1.0]],
+            'gemini-2.0-flash-lite-preview-02-05' => ['topP' => [0.0, 1.0]],
+            'gemini-2.0-flash-exp-image-generation' => ['topP' => [0.0, 1.0]],
+            'gemini-2.5-pro-preview-03-25' => ['topP' => [0.0, 1.0]],
         ];
 
         if ($topP === null) {
@@ -85,12 +93,16 @@ trait GeminiModelValidations
         // Definir los rangos válidos para cada modelo
         $modelRanges = [
             'gemini-2.0-flash-exp' => ['temperature' => [0.0, 2.0]],
-            'gemini-exp-1206' => ['temperature' => [0.0, 2.0]],
             'gemini-2.0-flash-thinking-exp-01-21' => ['temperature' => [0.0, 2.0]],
             'learnlm-1.5-pro-experimental' => ['temperature' => [0.0, 2.0]],
             'gemini-1.5-pro' => ['temperature' => [0.0, 2.0]],
             'gemini-1.5-flash' => ['temperature' => [0.0, 2.0]],
             'gemini-1.5-flash-8b' => ['temperature' => [0.0, 2.0]],
+            'gemini-2.0-flash' => ['temperature' => [0.0, 2.0]],
+            'gemini-2.0-flash-lite' => ['temperature' => [0.0, 2.0]],
+            'gemini-2.0-flash-lite-preview-02-05' => ['temperature' => [0.0, 2.0]],
+            'gemini-2.0-flash-exp-image-generation' => ['temperature' => [0.0, 2.0]],
+            'gemini-2.5-pro-preview-03-25' => ['temperature' => [0.0, 2.0]],
         ];
 
         if ($temperature === null) {

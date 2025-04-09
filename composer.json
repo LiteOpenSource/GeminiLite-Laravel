@@ -3,7 +3,6 @@
     "version": "0.0.3",
     "description": "Redisingned and easy to use Gemini Lite SDK for Laravel",
     "type": "library",
-    "version": "0.1.0",
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -28,10 +27,10 @@
     "require": {
         "php": "^8.0",
         "guzzlehttp/guzzle": "^7.0",
-        "illuminate/support": "^9.0 || ^10.0 || ^11.0",
-        "illuminate/console": "^9.0 || ^10.0 || ^11.0",
-        "illuminate/database": "^9.0 || ^10.0 || ^11.0",
-        "illuminate/http": "^9.0 || ^10.0 || ^11.0"
+        "illuminate/support": "^9.0 || ^10.0 || ^11.0 || ^12.0",
+        "illuminate/console": "^9.0 || ^10.0 || ^11.0 || ^12.0",
+        "illuminate/database": "^9.0 || ^10.0 || ^11.0 || ^12.0",
+        "illuminate/http": "^9.0 || ^10.0 || ^11.0 || ^12.0"
     },
     "extra": {
         "laravel": {
