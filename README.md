@@ -171,20 +171,29 @@ $chat->setGeminiModelConfig(
 
 You can switch between different Gemini models. The currently available models are:
 
-Stable Models:
-- gemini-1.5-flash
-- gemini-1.5-pro
-- gemini-1.5-flash-8b
-- gemini-2.0-flash
-- gemini-2.0-flash-lite-preview-02-05
-- gemini-2.0-pro-exp-02-05
-- gemini-2.0-flash-thinking-exp-01-21
+### Stable Models
 
+- **gemini-1.5-flash**: Fast and efficient model for everyday use.
+- **gemini-1.5-pro**: Advanced professional model with enhanced capabilities.
+- **gemini-1.5-flash-8b**: Lightweight 8B parameter version for faster processing.
+- **gemini-2.0-flash**: Improved speed and performance in the 2.0 series.
+- **gemini-2.0-flash-lite**: A lightweight version of Gemini 2.0 Flash.
+- **gemini-2.0-flash-lite-preview-02-05**: Preview of the lightweight 2.0 version.
 
+### Experimental Models
 
-Experimental Models:
-- gemini-2.0-flash-exp
-- learnlm-1.5-pro-experimental
+- **gemini-2.0-flash-exp**: Cutting-edge features in the experimental Flash model.
+- **gemini-2.0-pro-exp-02-05**: Professional experimental model in the 2.0 series.
+- **gemini-2.0-flash-thinking-exp-01-21**: Enhanced reasoning capabilities.
+- **gemini-2.0-flash-exp-image-generation**: Specialized model for image generation tasks.
+- **learnlm-1.5-pro-experimental**: Learning-focused experimental model.
+
+### Gemini 2.5 Models
+
+- **gemini-2.5-pro-preview-03-25**: Preview version of Gemini 2.5 Pro (note: no free quota tier).
+- **gemini-2.5-pro-exp-03-25**: Experimental version of Gemini 2.5 Pro with free quota tier access.
+
+> **Note**: The `gemini-2.5-pro-preview-03-25` model doesn't have a free quota tier. Google recommends using the experimental version (`gemini-2.5-pro-exp-03-25`) for free tier access.
 
 ```php
 $chat->changeGeminiModel("gemini-2.0-flash"); // Example using new model
